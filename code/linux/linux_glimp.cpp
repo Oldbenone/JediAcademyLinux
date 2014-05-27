@@ -1824,6 +1824,10 @@ void Input_GetState( void );
 static unsigned int	keyshift[256];		// key to map to if shift held down in console
 static qboolean shift_down=qfalse;
 
+#ifdef PANDORA
+extern int noshouldermb;
+#endif
+
 static char *XLateKey(XKeyEvent *ev, int *key)
 {
 	static char buf[64];
@@ -1911,7 +1915,7 @@ static char *XLateKey(XKeyEvent *ev, int *key)
 
 #ifdef PANDORA
 		case XK_Shift_L:	*key = A_SHIFT;		break;
-		case XK_Shift_R:	*key = A_MOUSE2;	break;
+		case XK_Shift_R:	*key = (noshouldermb)?A_SHIFT:A_MOUSE2;	break;
 #else
 		case XK_Shift_L:
 		case XK_Shift_R:	*key = A_SHIFT;		break;
@@ -1920,7 +1924,7 @@ static char *XLateKey(XKeyEvent *ev, int *key)
 		case XK_Execute: 
 #ifdef PANDORA
 		case XK_Control_L: 	*key = A_CTRL;		 break;
-		case XK_Control_R:	*key = A_MOUSE1;	 break;
+		case XK_Control_R:	*key = (noshouldermb)?A_CTRL:A_MOUSE1;	 break;
 #else
 		case XK_Control_L: 
 		case XK_Control_R:	*key = A_CTRL;		 break;

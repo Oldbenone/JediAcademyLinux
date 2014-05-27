@@ -857,6 +857,9 @@ main
 */
 uid_t saved_euid;
 cvar_t *nostdout;
+#ifdef PANDORA
+int noshouldermb;
+#endif
 
 int main (int argc, char **argv)
 {
@@ -876,11 +879,22 @@ int main (int argc, char **argv)
 		len += strlen(argv[i]) + 1;
 	cmdline = (char*) malloc(len);
 	*cmdline = 0;
+	#ifdef PANDORA
+	noshouldermb=0;
+	#endif
 	for (i = 1; i < argc; i++) {
+		#ifdef PANDORA
+		if( !strcmp( argv[i], "--noshouldermb" )) {
+			noshouldermb=1;
+		} else {
+		#endif
 		if (i > 1)
 			strcat(cmdline, " ");
 		strcat(cmdline, argv[i]);
 	}
+		#ifdef PANDORA
+		}
+		#endif
 	Com_Init(cmdline);
 
   //LAva Port in progress ...
