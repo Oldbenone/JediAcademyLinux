@@ -576,6 +576,8 @@ int GLW_SetMode( const char *drivername, int mode, qboolean fullscreen )
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+	WG_CheckHardwareGamma();
+
 #else
 	int attrib[] = {
 		GLX_RGBA,					// 0
