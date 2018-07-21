@@ -34,7 +34,7 @@ qboolean NPC_CheckPlayerTeamStealth( void );
 static qboolean enemyLOS;
 static qboolean enemyCS;
 static qboolean faceEnemy;
-static qboolean move;
+static qboolean _move;
 static qboolean shoot;
 static float	enemyDist;
 
@@ -308,7 +308,7 @@ static void Grenadier_CheckMoveState( void )
 	{
 		if ( NPCInfo->goalEntity == NPC->enemy )
 		{
-			move = qfalse;
+			_move = qfalse;
 			return;
 		}
 	}
@@ -329,7 +329,7 @@ static void Grenadier_CheckMoveState( void )
 	{
 		if ( !NPCInfo->goalEntity )
 		{
-			move = qfalse;
+			_move = qfalse;
 			return;
 		}
 		//Should keep moving toward player when we're out of range... right?
@@ -486,7 +486,7 @@ void NPC_BSGrenadier_Attack( void )
 	}
 
 	enemyLOS = enemyCS = qfalse;
-	move = qtrue;
+	_move = qtrue;
 	faceEnemy = qfalse;
 	shoot = qfalse;
 	enemyDist = DistanceSquared( NPC->enemy->currentOrigin, NPC->currentOrigin );
@@ -577,11 +577,11 @@ void NPC_BSGrenadier_Attack( void )
 		shoot = qtrue;
 		if ( NPC->client->ps.weapon == WP_THERMAL )
 		{//don't chase and throw
-			move = qfalse;
+			_move = qfalse;
 		}
 		else if ( NPC->client->ps.weapon == WP_MELEE && enemyDist < (NPC->maxs[0]+NPC->enemy->maxs[0]+16)*(NPC->maxs[0]+NPC->enemy->maxs[0]+16) )
 		{//close enough
-			move = qfalse;
+			_move = qfalse;
 		}
 	}//this should make him chase enemy when out of range...?
 
@@ -591,19 +591,19 @@ void NPC_BSGrenadier_Attack( void )
 	//See if we should override shooting decision with any special considerations
 	Grenadier_CheckFireState();
 
-	if ( move )
+	if ( _move )
 	{//move toward goal
 		if ( NPCInfo->goalEntity )//&& ( NPCInfo->goalEntity != NPC->enemy || enemyDist > 10000 ) )//100 squared
 		{
-			move = Grenadier_Move();
+			_move = Grenadier_Move();
 		}
 		else
 		{
-			move = qfalse;
+			_move = qfalse;
 		}
 	}
 
-	if ( !move )
+	if ( !_move )
 	{
 		if ( !TIMER_Done( NPC, "duck" ) )
 		{
@@ -618,7 +618,7 @@ void NPC_BSGrenadier_Attack( void )
 
 	if ( !faceEnemy )
 	{//we want to face in the dir we're running
-		if ( move )
+		if ( _move )
 		{//don't run away and shoot
 			NPCInfo->desiredYaw = NPCInfo->lastPathAngles[YAW];
 			NPCInfo->desiredPitch = 0;
